@@ -1,0 +1,1 @@
+export type HistoryElement = { text : string, renderColor : string }
