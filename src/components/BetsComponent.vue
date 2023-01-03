@@ -13,6 +13,7 @@
     var runs = ref(false);
     var fail = ref(0), success = ref(0);
     var historyLimit = ref(10);
+    var defaultBalance = ref(100);
 
     function addElement(element : HistoryElement) {
         elements.value.unshift(element);
@@ -38,7 +39,9 @@
             }
         } catch (e) {
             info =  { text: 'Error: ' + e, renderColor: '#f00' };
-            casino.value.balance = 100;
+            casino.value.balance = defaultBalance.value;
+            console.log(defaultBalance.value);
+            
             //runs.value = false;
             //addElement(info);
             if(e === 'Not enoung money') fail.value++;
@@ -63,15 +66,18 @@
         <input :disabled="runs" placeholder="Minimal bet" v-model="casino.minBet">
         <p>Aim</p>
         <input :disabled="runs" placeholder="Aim" v-model="betMaker.aim">
+        <p>Default balance after win/lose</p>
+        <input :disabled="runs" placeholder="Aim" v-model="defaultBalance">
     </div>
     <button @click="onRunClicked">Run/Stop</button>
-    <button @click="onEraseClicked">Clear history</button>
     <br>
     <label>History limit:   </label>
     <input v-model="historyLimit">
+    <button @click="onEraseClicked">Clear history</button>
     <p>Success: {{ success }}</p>
     <p>Fail: {{ fail }}</p>
     <p>Win rate: {{ success/(success+fail) }}</p>
+    <button @click="success=fail=0">Reset statitics</button>
     <HistoryComponent :elements="elements" />
 </template>
 <style scoped>
@@ -81,6 +87,7 @@
     .grid {
         display: grid;
         grid-template-columns: repeat(6,1fr);
+        max-width: 100vw;
     }
     .grid p {
         grid-row-start: 1;
@@ -89,5 +96,6 @@
     .grid * {
         grid-row-start: 2;
         grid-row-end: 3;
+        width: 100%;
     }
 </style>
