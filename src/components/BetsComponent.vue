@@ -11,6 +11,7 @@
     var betMaker = ref(new BetMaker(1000));
 
     var runs = ref(false);
+    var fail = ref(0), success = ref(0);
 
     function addElement(element : HistoryElement) {
         elements.value.unshift(element);
@@ -39,6 +40,8 @@
             casino.value.balance = 100;
             //runs.value = false;
             addElement(info);
+            if(e === 'Not enoung money') fail.value++;
+            else success.value++;
         }
         
         setTimeout( makeBet );
@@ -55,5 +58,8 @@
     <input :disabled="runs" placeholder="Aim" v-model="betMaker.aim">
     <button @click="onRunClicked">Run/Stop</button>
     <button @click="onEraseClicked">Clear history</button>
+    <p>Success: {{ success }}</p>
+    <p>Fail: {{ fail }}</p>
+    <p>Win rate: {{ success/(success+fail) }}</p>
     <HistoryComponent :elements="elements" />
 </template>
