@@ -12,10 +12,11 @@
 
     var runs = ref(false);
     var fail = ref(0), success = ref(0);
+    var historyLimit = ref(10);
 
     function addElement(element : HistoryElement) {
         elements.value.unshift(element);
-        if(elements.value.length > 500)elements.value.pop();
+        while(elements.value.length > historyLimit.value)elements.value.pop();
     }
     function onRunClicked() {
         runs.value = !runs.value;
@@ -39,10 +40,11 @@
             info =  { text: 'Error: ' + e, renderColor: '#f00' };
             casino.value.balance = 100;
             //runs.value = false;
-            addElement(info);
+            //addElement(info);
             if(e === 'Not enoung money') fail.value++;
             else success.value++;
         }
+        addElement(info);
         
         setTimeout( makeBet );
     }
@@ -52,14 +54,40 @@
     }
 </script>
 <template>
-    <input :disabled="runs" placeholder="Initial balance" id="balance" v-model="casino.balance">
-    <input :disabled="runs" placeholder="Multiplier" id="multiplier" v-model="casino.multiplier">
-    <input :disabled="runs" placeholder="Minimal bet" v-model="casino.minBet">
-    <input :disabled="runs" placeholder="Aim" v-model="betMaker.aim">
+    <div class="grid">
+        <p>Balance</p>
+        <input :disabled="runs" placeholder="Initial balance" id="balance" v-model="casino.balance">
+        <p>Multiplier</p>
+        <input :disabled="runs" placeholder="Multiplier" id="multiplier" v-model="casino.multiplier">
+        <p>Minimal bet</p>
+        <input :disabled="runs" placeholder="Minimal bet" v-model="casino.minBet">
+        <p>Aim</p>
+        <input :disabled="runs" placeholder="Aim" v-model="betMaker.aim">
+    </div>
     <button @click="onRunClicked">Run/Stop</button>
     <button @click="onEraseClicked">Clear history</button>
+    <br>
+    <label>History limit:   </label>
+    <input v-model="historyLimit">
     <p>Success: {{ success }}</p>
     <p>Fail: {{ fail }}</p>
     <p>Win rate: {{ success/(success+fail) }}</p>
     <HistoryComponent :elements="elements" />
 </template>
+<style scoped>
+    p {
+        margin: 0;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(6,1fr);
+    }
+    .grid p {
+        grid-row-start: 1;
+        grid-row-end: 2;
+    }
+    .grid * {
+        grid-row-start: 2;
+        grid-row-end: 3;
+    }
+</style>
