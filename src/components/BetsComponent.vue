@@ -45,7 +45,7 @@
                 renderColor: '#ffe'
             }
         } catch (e) {
-            info =  { text: 'Error: ' + e, renderColor: '#f00' };
+            info =  { text: 'Error: ' + e, renderColor: e == 'Aim has already been achieved' ? '#0f0' : '#f00' };
             casino.value.balance = defaultBalance.value;
             
             if(e === 'Not enoung money') fail.value++;
